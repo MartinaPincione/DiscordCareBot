@@ -1,9 +1,4 @@
-
-import {
-    Event,
-    EventExec,
-    EventKeys
-} from '../types'
+import {  Event, EventExec, EventKeys } from '../types'
 import { Client } from 'discord.js'
 
 export function event<T extends EventKeys>(id: T, exec: EventExec<T>): Event<T> {
@@ -12,9 +7,16 @@ export function event<T extends EventKeys>(id: T, exec: EventExec<T>): Event<T> 
 
 export function registerEvents(client: Client, events: Event<any>[]): void {
     for (const event of events)
-    client.on(event.id, event.exec.bind(null, {
-        client,
-        log: (...args) => 
-            console.log(`[${event.id}]`, ...args)
-    }))
+        client.on(event.id, async(...args) => {
+            const props = {
+                client,
+                log: (...args: unknown[]) =>
+                    console.log(`[${event.id}]`, ...args)
+        }
+        try {
+            await event.exec(props, ...args)
+        } catch (error) {
+            props.log('Uncaught Error', error)
+        }
+    })
 }
