@@ -18,6 +18,6 @@ export default command(meta, ({ interaction }) => {
 
   return interaction.reply({
     ephemeral: true,
-    content: message ?? 'Pong!'
+    content: message ?? "Ayo hold on a second, I'm to get this to work with other features."
   })
 })
